@@ -1,0 +1,13 @@
+name: 'Helm Package'
+description: 'Generate Helm Chart archive (.tgz) from a Helm Chart'
+inputs:
+  path:
+    description: 'Path to the Helm Chart (including the Helm Chart itself)'
+    required: true
+runs:
+  using: 'docker'
+  image: 'docker://alpine/helm:2.16.0'
+  args:
+    - package
+    - ${{ inputs.path }}
+    - --save=false

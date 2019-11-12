@@ -1,0 +1,20 @@
+name: 'Helm Chart Releaser : Create Index'
+description: 'Generate Helm repository index using Helm Chart Releaser (https://github.com/helm/chart-releaser#create-the-repository-index-from-github-releases)'
+inputs:
+  package-path:
+    description: 'Path to directory with chart packages (default ".cr-release-packages")'
+    required: true
+    default: '.cr-release-packages'
+runs:
+  using: 'docker'
+  image: 'docker://quay.io/helmpack/chart-releaser:v0.2.2'
+  entrypoint: '/bin/sh'
+  args:
+    - '-c'
+    - |
+      set -x; set -e;
+      OWNER=${GITHUB_REPOSITORY%%/*};
+      REPOSITORY_NAME=${GITHUB_REPOSITORY#1/*};
+      mkdir -p ${{ inputs.package_path }};
+      apk add ca-certificates;
+      cr index -i ./index.yaml --package-path ${{ inputs.package_path }} --git-repo $REPOSITORY_NAME --owner $OWNER --charts-repo https://$OWNER.github.io/$GITHUB_REPOSITORY

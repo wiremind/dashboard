@@ -1,0 +1,68 @@
+on:
+  push:
+    # Sequence of patterns matched against refs/tags
+    tags:
+    - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
+    branches:
+    - master  # XXX remove me
+
+name: Create GitHub Release and upload Helm Chart as asset
+
+jobs:
+  release:
+    name: Create a GitHub Release, uploads assets (including Helm Chart) to it
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Checkout code
+        uses: actions/checkout@master
+
+      - name: Create GitHub Release
+        id: create_release
+        uses: actions/create-release@v1.0.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: ${{ github.ref }}
+          draft: true  # An owner will need to publish it
+          prerelease: false  # XXX handle pre-releases
+
+      - name: Package Helm Chart
+        uses: ./.github/actions/helm-package
+        with:
+          path: aio/deploy/helm-chart/kubernetes-dashboard
+
+      - name: Rename Helm Chart
+        run: |
+          # "helm package" generates a $CHART_NAME-$VERSION.tgz, but we don't know $VERSION
+          mv *.tgz kubernetes-dashboard-helm-chart.tgz
+
+      - name: Extract branch/tag name  # For a branch, ref is like refs/heads/branchname
+        shell: bash
+        run: echo "##[set-output name=name;]$(echo ${GITHUB_REF##*/})"
+        id: extract_branch
+
+      - name: Upload Release Asset
+        id: upload-release-asset
+        uses: actions/upload-release-asset@v1.0.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
+          asset_path: ./kubernetes-dashboard-helm-chart.tgz
+          asset_name: kubernetes-dashboard-helm-chart-${{ steps.extract_branch.outputs.name }}.tgz
+          asset_content_type: application/gzip
+
+      - name: Generate Helm Repository index file
+        uses: ./.github/actions/helm-chart-releaser-create-index
+        with:
+          package_path: helm-chart-generated
+
+      - name: Deploy Helm repository index to gh-pages
+        uses: JamesIves/github-pages-deploy-action@releases/v2
+        env:
+          ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+          BASE_BRANCH: ${{ steps.extract_branch.outputs.name }}
+          BRANCH: gh-pages
+          FOLDER: helm-chart-generated
