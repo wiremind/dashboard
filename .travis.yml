@@ -35,22 +35,47 @@ before_script:
 jobs:
   include:
     - stage: test
+      name: "Test"
       before_script:
         - aio/scripts/install-codegen.sh
       script: npm run check
-    - script: npm run test:coverage
+    - name: "Test coverage"
+      script: npm run test:coverage
       after_success:
         - rm -rf $TRAVIS_BUILD_DIR/.tmp
         - bash <(curl -s https://codecov.io/bash)
-    - script: npm run cluster:start && npm run e2e
+    - name: "Helm linting"
+      install:
+        - curl -L https://git.io/get_helm.sh | bash && helm init --skip-refresh --client-only
+      before_script: skip
+      script:
+        - cd aio/deploy/helm-chart/kubernetes-dashboard
+        - helm lint
+        - helm template .
+    - name: "e2e tests"
+      script: npm run cluster:start && npm run e2e
+
     - stage: deploy
+      name: "docker push head"
       script:
         - docker login -u $DOCKER_USER -p $DOCKER_PASS
         - npm run docker:push:head
+
     - stage: release
+      name: "Docker push"
       script:
         - docker login -u $DOCKER_RELEASE_USER -p $DOCKER_RELEASE_PASS
         - npm run docker:push
+    - name: "Helm repository generation"
+      before_script:
+        - curl -L https://git.io/get_helm.sh | bash && helm init --skip-refresh --client-only
+      script:
+        - helm package "aio/deploy/helm-chart/kubernetes-dashboard"
+        - git fetch
+        - git checkout gh-pages
+        - helm repo index .
+        - git add --all :/ && git commit -m "Update Helm repository from CI."
+        - git push "https://$GITHUB_WRITE_TOKEN@github.com/$TRAVIS_REPO_SLUG" origin gh-pages
 
 stages:
   - test
