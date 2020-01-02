@@ -1,0 +1,81 @@
+{{- if .Values.metricsScraper.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.metricsScraper.name }}
+{{- with .Values.metricsScraper.annotations }}
+  annotations:
+{{ toYaml . | indent 4 }}
+{{- end }}
+  labels:
+{{ include "dashboard-metrics-scraper.labels" . | indent 4 }}
+{{- if .Values.metricsScraper.labels }}
+{{ toYaml .Values.metricsScraper.labels | indent 4 }}
+{{- end }}
+spec:
+  replicas: {{ .Values.metricsScraper.replicaCount }}
+  revisionHistoryLimit: {{ .Values.metricsScraper.revisionHistoryLimit }}
+  selector:
+    matchLabels:
+{{ include "dashboard-metrics-scraper.matchLabels" . | indent 6 }}
+  template:
+    metadata:
+{{- with .Values.metricsScraper.podAnnotations }}
+      annotations:
+{{ toYaml . | indent 8 }}
+{{- end }}
+      labels:
+{{ include "dashboard-metrics-scraper.labels" . | indent 8 }}
+    spec:
+      {{- if .Values.securityContext }}
+      securityContext:
+{{ toYaml .Values.securityContext | indent 8 }}
+      {{- end }}
+      serviceAccountName: {{ template "kubernetes-dashboard.serviceAccountName" . }}
+      containers:
+      - name: {{ .Values.metricsScraper.name }}
+        image: "{{ .Values.metricsScraper.image.repository }}:{{ .Values.metricsScraper.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        ports:
+          - containerPort: 8000
+            protocol: TCP
+        livenessProbe:
+          httpGet:
+            scheme: HTTP
+            path: /
+            port: 8000
+          initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
+          timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
+        volumeMounts:
+        - mountPath: /tmp
+          name: tmp-volume
+{{- if .Values.metricsScraperContainerSecurityContext }}
+        securityContext:
+{{ toYaml .Values.metricsScraperContainerSecurityContext | indent 10 }}
+{{- end }}
+{{- with .Values.metricsScraper.resources }}
+        resources:
+{{ toYaml . | indent 10 }}
+{{- end }}
+{{- with .Values.image.pullSecrets }}
+      imagePullSecrets:
+{{- range . }}
+        - name: {{ . }}
+{{- end }}
+{{- end }}
+{{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+{{- end }}
+{{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+{{- end }}
+{{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+{{- end }}
+      volumes:
+        - name: tmp-volume
+          emptyDir: {}
+{{- end }}

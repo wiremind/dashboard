@@ -1,0 +1,17 @@
+{{- if .Values.metricsScraper.enabled }}
+kind: Service
+apiVersion: v1
+metadata:
+  name: {{ .Values.metricsScraper.name }}
+  labels:
+{{ include "dashboard-metrics-scraper.labels" . | indent 4 }}
+{{- if .Values.metricsScraper.labels }}
+{{ toYaml .Values.metricsScraper.labels | indent 4 }}
+{{- end }}
+spec:
+  ports:
+    - port: 8000
+      targetPort: 8000
+  selector:
+{{ include "dashboard-metrics-scraper.matchLabels" . | indent 4 }}
+{{- end }}
