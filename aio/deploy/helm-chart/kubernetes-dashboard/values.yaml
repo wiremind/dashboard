@@ -120,8 +120,12 @@ ingress:
   #       - kubernetes-dashboard.domain.com
 
 rbac:
-  # Specifies whether RBAC resources should be created
+  # Specifies whether namespaced RBAC resources (Role, Rolebinding) should be created
   create: true
+
+  # Specifies whether cluster-wide RBAC resources (ClusterRole, ClusterRolebinding) to access metrics should be created
+  # Independent from rbac.create parameter.
+  clusterRoleMetrics: true
 
   # Start in ReadOnly mode.
   # Only dashboard-related Secrets and ConfigMaps will still be available for writing.
@@ -133,6 +137,8 @@ rbac:
   # It is NOT RECOMMENDED to use this version in production.
   # Instead you should review the role and remove all potentially sensitive parts such as
   # access to persistentvolumes, pods/log etc.
+  #
+  # Independent from rbac.create parameter.
   clusterReadOnlyRole: false
 
 serviceAccount:
