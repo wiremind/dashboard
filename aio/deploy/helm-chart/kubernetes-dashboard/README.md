@@ -76,7 +76,6 @@ Parameter                           | Description                               
 `extraArgs`                         | Additional container arguments                                                                                              | `[]`
 `extraEnv`                          | Additional container environment variables                                                                                  | `[]`
 `podAnnotations`                    | Annotations to be added to pods                                                                                             | `seccomp.security.alpha.kubernetes.io/pod: 'runtime/default'}`
-`dashboardContainerSecurityContext` | SecurityContext for the kubernetes dashboard container                                                                      | `{}`
 `nodeSelector`                      | node labels for pod assignment                                                                                              | `{}`
 `tolerations`                       | List of node taints to tolerate (requires Kubernetes >= 1.6)                                                                | `[]`
 `affinity`                           | Affinity for pod assignment                                                                                                | `[]`
@@ -100,7 +99,8 @@ Parameter                           | Description                               
 `podDisruptionBudget.enabled`       | Create a PodDisruptionBudget                                                                                                | `false`
 `podDisruptionBudget.minAvailable`  | Minimum available instances; ignored if there is no PodDisruptionBudget                                                     |
 `podDisruptionBudget.maxUnavailable`| Maximum unavailable instances; ignored if there is no PodDisruptionBudget                                                   |
-`securityContext`                   | PodSecurityContext for pod level securityContext                                                                            | `{allowPrivilegeEscalation:false, readOnlyRootFilesystem: true, runAsUser: 1001, runAsGroup: 2001}`
+`securityContext`                   | PodSecurityContext for pod level securityContext                                                                            | `{}`
+`dashboardContainerSecurityContext` | SecurityContext for the kubernetes dashboard container                                                                      | `{allowPrivilegeEscalation:false, readOnlyRootFilesystem: true, runAsUser: 1001, runAsGroup: 2001}`
 `networkPolicy`                     | Whether to create a network policy that allows access to the service                                                        | `false`
 `protocolHttp`                      | Serve application over HTTP without TLS                                                                                     | `false`
 

@@ -162,13 +162,15 @@ podDisruptionBudget:
   maxUnavailable:
 
 ## PodSecurityContext for pod level securityContext
-securityContext:
-  runAsUser: 1001
-  runAsGroup: 2001
+# securityContext:
+#   runAsUser: 1001
+#   runAsGroup: 2001
 
 ## SecurityContext for the kubernetes dashboard container
 dashboardContainerSecurityContext:
   allowPrivilegeEscalation: false
   readOnlyRootFilesystem: true
+  runAsUser: 1001
+  runAsGroup: 2001
 
 networkPolicy: false
