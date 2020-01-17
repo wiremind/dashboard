@@ -89,7 +89,7 @@ resources:
     cpu: 100m
     memory: 100Mi
   limits:
-    cpu: 10
+    cpu: 2
     memory: 100Mi
 
 ingress:

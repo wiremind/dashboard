@@ -88,7 +88,7 @@ Parameter                           | Description                               
 `ingress.paths`                     | Paths to match against incoming requests. Both `/` and `/*` are required to work on gce ingress.                            | `[/]`
 `ingress.hosts`                     | Dashboard Hostnames                                                                                                         | `nil`
 `ingress.tls`                       | Ingress TLS configuration                                                                                                    | `[]`
-`resources`                         | Pod resource requests & limits                                                                                              | `limits: {cpu: 100m, memory: 100Mi}, requests: {cpu: 100m, memory: 100Mi}`
+`resources`                         | Pod resource requests & limits                                                                                              | `limits: {cpu: 2, memory: 100Mi}, requests: {cpu: 100m, memory: 100Mi}`
 `rbac.create`                       | Create & use RBAC resources                                                                                                 | `true`
 `rbac.clusterRoleMetrics`           | If set, an additional cluster role / role binding will be created to access metrics.                                        | `true`
 `rbac.clusterReadOnlyRole`          | If set, an additional cluster role / role binding will be created with read only permissions to all resources listed inside.| `false`
