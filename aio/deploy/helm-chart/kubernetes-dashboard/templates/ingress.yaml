@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-{{- if .Values.ingress.enabled }}
+{{ if .Values.ingress.enabled -}}
 {{- $serviceName := include "kubernetes-dashboard.fullname" . -}}
 {{- $servicePort := .Values.service.externalPort -}}
 {{- $paths := .Values.ingress.paths -}}

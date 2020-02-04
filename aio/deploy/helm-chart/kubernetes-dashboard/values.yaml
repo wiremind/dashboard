@@ -187,4 +187,5 @@ dashboardContainerSecurityContext:
   runAsUser: 1001
   runAsGroup: 2001
 
-networkPolicy: false
+networkPolicy:
+  enabled: false
