@@ -87,10 +87,10 @@ service:
 resources:
   requests:
     cpu: 100m
-    memory: 100Mi
+    memory: 200Mi
   limits:
     cpu: 2
-    memory: 100Mi
+    memory: 200Mi
 
 ingress:
   ## If true, Kubernetes Dashboard Ingress will be created.
