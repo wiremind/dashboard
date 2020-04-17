@@ -100,6 +100,23 @@ spec:
 {{- end }}
           initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
           timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
+        readinessProbe:
+          httpGet:
+{{- if .Values.protocolHttp }}
+            scheme: HTTP
+            path: /
+            port: 9090
+{{- else }}
+            scheme: HTTPS
+            path: /
+            port: 8443
+{{- end }}
+          initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
+          timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
+{{- with .Values.resources }}
+        resources:
+{{ toYaml . | indent 10 }}
+{{- end }}          
 {{- if .Values.metricsScraper.enabled }}
       - name: dashboard-metrics-scraper
         image: "{{ .Values.metricsScraper.image.repository }}:{{ .Values.metricsScraper.image.tag }}"
@@ -114,6 +131,13 @@ spec:
             port: 8000
           initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
           timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
+        readinessProbe:
+          httpGet:
+            scheme: HTTP
+            path: /
+            port: 8000
+          initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
+          timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}             
         volumeMounts:
         - mountPath: /tmp
           name: tmp-volume
@@ -128,10 +152,6 @@ spec:
 {{- end }}
 {{- with .Values.dashboardContainerSecurityContext }}
         securityContext:
-{{ toYaml . | indent 10 }}
-{{- end }}
-{{- with .Values.resources }}
-        resources:
 {{ toYaml . | indent 10 }}
 {{- end }}
 {{- with .Values.image.pullSecrets }}
