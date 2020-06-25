@@ -3,7 +3,32 @@ entries:
   kubernetes-dashboard:
   - apiVersion: v1
     appVersion: 2.0.3
-    created: "2020-06-25T13:02:28.052380475Z"
+    created: "2020-06-25T14:56:17.297721019Z"
+    dependencies:
+    - condition: metrics-server.enabled
+      name: metrics-server
+      repository: https://kubernetes-charts.storage.googleapis.com/
+      version: 2.11.1
+    description: General-purpose web UI for Kubernetes clusters
+    digest: 60653ceb3062bd6683ae22746189b469cd896b7c6875b6e0ba5aba2c4039e6f6
+    home: https://github.com/kubernetes/dashboard
+    icon: https://raw.githubusercontent.com/kubernetes/kubernetes/master/logo/logo.svg
+    keywords:
+    - kubernetes
+    - dashboard
+    kubeVersion: '>=1.10.0-0'
+    maintainers:
+    - email: cdesaintmartin@wiremind.fr
+      name: desaintmartin
+    name: kubernetes-dashboard
+    sources:
+    - https://github.com/kubernetes/dashboard
+    urls:
+    - kubernetes-dashboard-2.1.2.tgz
+    version: 2.1.2
+  - apiVersion: v1
+    appVersion: 2.0.3
+    created: "2020-06-25T14:56:17.295563106Z"
     dependencies:
     - condition: metrics-server.enabled
       name: metrics-server
@@ -28,7 +53,7 @@ entries:
     version: 2.1.1
   - apiVersion: v1
     appVersion: 2.0.3
-    created: "2020-06-25T13:02:28.050684178Z"
+    created: "2020-06-25T14:56:17.293235793Z"
     dependencies:
     - condition: metrics-server.enabled
       name: metrics-server
@@ -53,7 +78,7 @@ entries:
     version: 2.0.4
   - apiVersion: v1
     appVersion: 2.0.3
-    created: "2020-06-25T13:02:28.048966181Z"
+    created: "2020-06-25T14:56:17.29105468Z"
     dependencies:
     - condition: metrics-server.enabled
       name: metrics-server
@@ -78,7 +103,7 @@ entries:
     version: 2.0.3
   - apiVersion: v1
     appVersion: 2.0.1
-    created: "2020-06-25T13:02:28.047249884Z"
+    created: "2020-06-25T14:56:17.289039668Z"
     dependencies:
     - condition: metrics-server.enabled
       name: metrics-server
@@ -101,4 +126,4 @@ entries:
     urls:
     - kubernetes-dashboard-2.0.1.tgz
     version: 2.0.1
-generated: "2020-06-25T13:02:28.034473407Z"
+generated: "2020-06-25T14:56:17.286235852Z"
